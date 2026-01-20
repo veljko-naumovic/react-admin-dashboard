@@ -12,6 +12,7 @@ import UserFormModal, {
 } from "../../components/modals/UserFormModal";
 
 const UsersPage = () => {
+	const [users, setUsers] = useState<User[]>(mockUsers);
 	const [search, setSearch] = useState("");
 	const [role, setRole] = useState<UserRole | undefined>();
 	const [status, setStatus] = useState<UserStatus | undefined>();
@@ -24,7 +25,7 @@ const UsersPage = () => {
 	const debouncedSearch = useDebounce(search);
 
 	const filteredUsers = useMemo(() => {
-		return mockUsers.filter((user) => {
+		return users.filter((user) => {
 			const matchesSearch =
 				user.name
 					.toLowerCase()
@@ -38,14 +39,14 @@ const UsersPage = () => {
 
 			return matchesSearch && matchesRole && matchesStatus;
 		});
-	}, [debouncedSearch, role, status]);
+	}, [users, debouncedSearch, role, status]);
 
 	const handlePageChange = useCallback((page: number) => {
 		setPage(page);
 	}, []);
 
 	const handleDelete = (id: string) => {
-		console.log("DELETE USER:", id);
+		setUsers((prev) => prev.filter((u) => u.id !== id));
 	};
 
 	const handleEdit = (user: User) => {
@@ -66,9 +67,21 @@ const UsersPage = () => {
 
 	const handleSubmit = (values: UserFormValues) => {
 		if (editingUser) {
-			console.log("UPDATE USER:", { ...editingUser, ...values });
+			// EDIT
+			setUsers((prev) =>
+				prev.map((u) =>
+					u.id === editingUser.id ? { ...u, ...values } : u,
+				),
+			);
 		} else {
-			console.log("CREATE USER:", values);
+			// CREATE
+			const newUser: User = {
+				id: crypto.randomUUID(),
+				...values,
+				createdAt: new Date().toISOString(),
+			};
+
+			setUsers((prev) => [newUser, ...prev]);
 		}
 
 		setIsModalOpen(false);
@@ -82,7 +95,10 @@ const UsersPage = () => {
 				<Input
 					placeholder="Search by name or email"
 					value={search}
-					onChange={(e) => setSearch(e.target.value)}
+					onChange={(e) => {
+						setSearch(e.target.value);
+						setPage(1);
+					}}
 					allowClear
 				/>
 
@@ -90,7 +106,10 @@ const UsersPage = () => {
 					placeholder="Role"
 					allowClear
 					style={{ width: 150 }}
-					onChange={(value) => setRole(value)}
+					onChange={(value) => {
+						setRole(value);
+						setPage(1);
+					}}
 					options={[
 						{ label: "Admin", value: "admin" },
 						{ label: "Manager", value: "manager" },
@@ -102,7 +121,10 @@ const UsersPage = () => {
 					placeholder="Status"
 					allowClear
 					style={{ width: 150 }}
-					onChange={(value) => setStatus(value)}
+					onChange={(value) => {
+						setStatus(value);
+						setPage(1);
+					}}
 					options={[
 						{ label: "Active", value: "active" },
 						{ label: "Blocked", value: "blocked" },
