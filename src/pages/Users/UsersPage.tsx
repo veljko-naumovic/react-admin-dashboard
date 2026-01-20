@@ -1,4 +1,4 @@
-import { Input, Select, Table } from "antd";
+import { Button, Input, Select, Table } from "antd";
 import { useCallback, useMemo, useState } from "react";
 
 import { mockUsers } from "./mockUsers";
@@ -7,12 +7,17 @@ import type { User, UserRole, UserStatus } from "../../types/user";
 
 import { useAuth } from "../../auth/useAuth";
 import { getUsersColumns } from "./usersColumns";
+import UserFormModal, {
+	type UserFormValues,
+} from "../../components/modals/UserFormModal";
 
 const UsersPage = () => {
 	const [search, setSearch] = useState("");
 	const [role, setRole] = useState<UserRole | undefined>();
 	const [status, setStatus] = useState<UserStatus | undefined>();
 	const [page, setPage] = useState(1);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [editingUser, setEditingUser] = useState<User | undefined>();
 
 	const { user } = useAuth();
 
@@ -39,12 +44,13 @@ const UsersPage = () => {
 		setPage(page);
 	}, []);
 
-	const handleEdit = (record: User) => {
-		console.log("EDIT USER:", record);
-	};
-
 	const handleDelete = (id: string) => {
 		console.log("DELETE USER:", id);
+	};
+
+	const handleEdit = (user: User) => {
+		setEditingUser(user);
+		setIsModalOpen(true);
 	};
 
 	const columns = getUsersColumns({
@@ -52,6 +58,21 @@ const UsersPage = () => {
 		onEdit: handleEdit,
 		onDelete: handleDelete,
 	});
+
+	const handleCreate = () => {
+		setEditingUser(undefined);
+		setIsModalOpen(true);
+	};
+
+	const handleSubmit = (values: UserFormValues) => {
+		if (editingUser) {
+			console.log("UPDATE USER:", { ...editingUser, ...values });
+		} else {
+			console.log("CREATE USER:", values);
+		}
+
+		setIsModalOpen(false);
+	};
 
 	return (
 		<>
@@ -89,6 +110,10 @@ const UsersPage = () => {
 				/>
 			</div>
 
+			<Button type="primary" onClick={handleCreate}>
+				Create User
+			</Button>
+
 			<Table<User>
 				rowKey="id"
 				columns={columns}
@@ -99,6 +124,12 @@ const UsersPage = () => {
 					total: filteredUsers.length,
 					onChange: handlePageChange,
 				}}
+			/>
+			<UserFormModal
+				open={isModalOpen}
+				onCancel={() => setIsModalOpen(false)}
+				onSubmit={handleSubmit}
+				initialValues={editingUser}
 			/>
 		</>
 	);
