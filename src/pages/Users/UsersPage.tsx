@@ -1,17 +1,20 @@
-import { Input, Select, Table, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Input, Select, Table } from "antd";
 import { useCallback, useMemo, useState } from "react";
-import dayjs from "dayjs";
 
 import { mockUsers } from "./mockUsers";
 import { useDebounce } from "../../hooks/useDebounce";
 import type { User, UserRole, UserStatus } from "../../types/user";
+
+import { useAuth } from "../../auth/useAuth";
+import { getUsersColumns } from "./usersColumns";
 
 const UsersPage = () => {
 	const [search, setSearch] = useState("");
 	const [role, setRole] = useState<UserRole | undefined>();
 	const [status, setStatus] = useState<UserStatus | undefined>();
 	const [page, setPage] = useState(1);
+
+	const { user } = useAuth();
 
 	const debouncedSearch = useDebounce(search);
 
@@ -32,47 +35,23 @@ const UsersPage = () => {
 		});
 	}, [debouncedSearch, role, status]);
 
-	const columns: ColumnsType<User> = useMemo(
-		() => [
-			{
-				title: "Name",
-				dataIndex: "name",
-				key: "name",
-			},
-			{
-				title: "Email",
-				dataIndex: "email",
-				key: "email",
-			},
-			{
-				title: "Role",
-				dataIndex: "role",
-				key: "role",
-				render: (role: UserRole) => <Tag color="blue">{role}</Tag>,
-			},
-			{
-				title: "Status",
-				dataIndex: "status",
-				key: "status",
-				render: (status: UserStatus) => (
-					<Tag color={status === "active" ? "green" : "red"}>
-						{status}
-					</Tag>
-				),
-			},
-			{
-				title: "Created",
-				dataIndex: "createdAt",
-				key: "createdAt",
-				render: (date: string) => dayjs(date).format("DD.MM.YYYY"),
-			},
-		],
-		[],
-	);
-
 	const handlePageChange = useCallback((page: number) => {
 		setPage(page);
 	}, []);
+
+	const handleEdit = (record: User) => {
+		console.log("EDIT USER:", record);
+	};
+
+	const handleDelete = (id: string) => {
+		console.log("DELETE USER:", id);
+	};
+
+	const columns = getUsersColumns({
+		role: user?.role,
+		onEdit: handleEdit,
+		onDelete: handleDelete,
+	});
 
 	return (
 		<>
