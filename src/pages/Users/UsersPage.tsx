@@ -9,6 +9,8 @@ import {
 	Popover,
 	Button,
 	message,
+	Empty,
+	notification,
 } from "antd";
 
 import { MoreOutlined } from "@ant-design/icons";
@@ -181,17 +183,31 @@ const UsersPage = () => {
 	};
 	const bulkDelete = async () => {
 		const prevUsers = users;
+		const count = selectedRowKeys.length;
 
+		// optimistic update
 		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
 
 		try {
 			setLoading(true);
 			await fakeApiCall(true);
-			message.success("Users deleted");
+
+			notification.success({
+				title: "Users deleted",
+				description: `${count} user${count > 1 ? "s" : ""} successfully deleted.`,
+				placement: "bottomRight",
+			});
+
 			clearSelection();
 		} catch {
+			// rollback
 			setUsers(prevUsers);
-			message.error("Bulk delete failed");
+
+			notification.error({
+				title: "Bulk delete failed",
+				description: "Something went wrong. Please try again.",
+				placement: "bottomRight",
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -303,7 +319,7 @@ const UsersPage = () => {
 					trigger="click"
 					placement="bottom"
 					content={
-						<Space direction="vertical">
+						<Space orientation="vertical">
 							<Button onClick={bulkActivate}>Activate</Button>
 							<Button onClick={bulkBlock}>Block</Button>
 							<Button
@@ -334,6 +350,9 @@ const UsersPage = () => {
 					onChange: handlePageChange,
 				}}
 				loading={loading}
+				locale={{
+					emptyText: <Empty description="No users found" />,
+				}}
 			/>
 			<UserFormModal
 				open={isModalOpen}

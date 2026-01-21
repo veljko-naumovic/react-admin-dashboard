@@ -6,6 +6,7 @@ import {
 	Tag,
 	Popover,
 	Typography,
+	Tooltip,
 } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import UserAuditInfo from "../../components/users/UserAuditInfo";
@@ -67,21 +68,18 @@ export const getUsersColumns = ({
 
 			return (
 				<Space>
-					<Switch
-						// checked={isActive}
-						// disabled={!canToggle}
-						// onChange={(checked) =>
-						// 	onStatusToggle(record.id, checked)
-						// }
-						checked={isActive}
-						disabled={!canToggle}
-						loading={loadingAction === record.id}
-						onChange={async (checked) => {
-							setLoadingAction(record.id);
-							await onStatusToggle(record.id, checked);
-							setLoadingAction(null);
-						}}
-					/>
+					<Tooltip title="Only admin can change status">
+						<Switch
+							checked={isActive}
+							disabled={!canToggle}
+							loading={loadingAction === record.id}
+							onChange={async (checked) => {
+								setLoadingAction(record.id);
+								await onStatusToggle(record.id, checked);
+								setLoadingAction(null);
+							}}
+						/>
+					</Tooltip>
 
 					<Tag color={isActive ? "green" : "red"}>
 						{record.status}
