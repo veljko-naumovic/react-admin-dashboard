@@ -8,6 +8,7 @@ import {
 	Space,
 	Popover,
 	Button,
+	message,
 } from "antd";
 
 import { MoreOutlined } from "@ant-design/icons";
@@ -27,6 +28,7 @@ import { getUsersColumns } from "./usersColumns";
 import UserFormModal, {
 	type UserFormValues,
 } from "../../components/modals/UserFormModal";
+import { fakeApiCall } from "../../utils/fakeApi";
 import dayjs from "dayjs";
 
 const UsersPage = () => {
@@ -43,6 +45,8 @@ const UsersPage = () => {
 	const [createdRange, setCreatedRange] = useState<
 		[Dayjs | null, Dayjs | null] | null
 	>(null);
+	const [loading, setLoading] = useState(false);
+	const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
 	const { user } = useAuth();
 
@@ -91,58 +95,14 @@ const UsersPage = () => {
 		setPage(page);
 	}, []);
 
-	const handleDelete = (id: string) => {
-		setUsers((prev) => prev.filter((u) => u.id !== id));
-	};
-
 	const handleEdit = (user: User) => {
 		setEditingUser(user);
 		setIsModalOpen(true);
 	};
 
-	const handleStatusToggle = (id: string, checked: boolean) => {
-		setUsers((prev) =>
-			prev.map((u) =>
-				u.id === id
-					? { ...u, status: checked ? "active" : "blocked" }
-					: u,
-			),
-		);
-	};
-
-	const columns = getUsersColumns({
-		role: user?.role,
-		onEdit: handleEdit,
-		onDelete: handleDelete,
-		onStatusToggle: handleStatusToggle,
-	});
-
 	const handleCreate = () => {
 		setEditingUser(undefined);
 		setIsModalOpen(true);
-	};
-
-	const handleSubmit = (values: UserFormValues) => {
-		if (editingUser) {
-			// EDIT
-			setUsers((prev) =>
-				prev.map((u) =>
-					u.id === editingUser.id ? { ...u, ...values } : u,
-				),
-			);
-		} else {
-			// CREATE
-			const newUser: User = {
-				id: crypto.randomUUID(),
-				...values,
-				createdAt: new Date().toISOString(),
-				createdBy: "System",
-			};
-
-			setUsers((prev) => [newUser, ...prev]);
-		}
-
-		setIsModalOpen(false);
 	};
 
 	const rowSelection = {
@@ -174,14 +134,113 @@ const UsersPage = () => {
 		clearSelection();
 	};
 
-	const bulkDelete = () => {
-		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
-		clearSelection();
-	};
-
 	const hasAdminSelected = users.some(
 		(u) => selectedRowKeys.includes(u.id) && u.role === "admin",
 	);
+
+	const handleStatusToggle = async (id: string, checked: boolean) => {
+		const prevUsers = users;
+
+		// optimistic update
+		setUsers((prev) =>
+			prev.map((u) =>
+				u.id === id
+					? { ...u, status: checked ? "active" : "blocked" }
+					: u,
+			),
+		);
+
+		try {
+			setLoading(true);
+			await fakeApiCall(true);
+			message.success("Status updated");
+		} catch {
+			// rollback
+			setUsers(prevUsers);
+			message.error("Failed to update status");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id: string) => {
+		const prevUsers = users;
+
+		setUsers((prev) => prev.filter((u) => u.id !== id));
+
+		try {
+			setLoading(true);
+			await fakeApiCall(true);
+			message.success("User deleted");
+		} catch {
+			setUsers(prevUsers);
+			message.error("Delete failed");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const bulkDelete = async () => {
+		const prevUsers = users;
+
+		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
+
+		try {
+			setLoading(true);
+			await fakeApiCall(true);
+			message.success("Users deleted");
+			clearSelection();
+		} catch {
+			setUsers(prevUsers);
+			message.error("Bulk delete failed");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleSubmit = async (values: UserFormValues) => {
+		const prevUsers = users;
+
+		try {
+			setLoading(true);
+
+			if (editingUser) {
+				setUsers((prev) =>
+					prev.map((u) =>
+						u.id === editingUser.id ? { ...u, ...values } : u,
+					),
+				);
+				await fakeApiCall(true);
+				message.success("User updated");
+			} else {
+				const newUser: User = {
+					id: crypto.randomUUID(),
+					...values,
+					createdAt: new Date().toISOString(),
+					createdBy: "Admin",
+				};
+
+				setUsers((prev) => [newUser, ...prev]);
+				await fakeApiCall(true);
+				message.success("User created");
+			}
+
+			setIsModalOpen(false);
+		} catch {
+			setUsers(prevUsers);
+			message.error("Save failed");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const columns = getUsersColumns({
+		role: user?.role,
+		onEdit: handleEdit,
+		onDelete: handleDelete,
+		onStatusToggle: handleStatusToggle,
+		loadingAction: loadingAction,
+		setLoadingAction: setLoadingAction,
+	});
 
 	return (
 		<>
@@ -274,6 +333,7 @@ const UsersPage = () => {
 					total: filteredUsers.length,
 					onChange: handlePageChange,
 				}}
+				loading={loading}
 			/>
 			<UserFormModal
 				open={isModalOpen}

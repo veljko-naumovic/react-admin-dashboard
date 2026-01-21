@@ -20,6 +20,8 @@ interface ColumnsArgs {
 	onEdit: (user: User) => void;
 	onDelete: (id: string) => void;
 	onStatusToggle: (id: string, checked: boolean) => void;
+	loadingAction: string | null;
+	setLoadingAction: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const getUsersColumns = ({
@@ -27,6 +29,8 @@ export const getUsersColumns = ({
 	onEdit,
 	onDelete,
 	onStatusToggle,
+	loadingAction,
+	setLoadingAction,
 }: ColumnsArgs): ColumnsType<User> => [
 	{
 		title: "Name",
@@ -64,11 +68,19 @@ export const getUsersColumns = ({
 			return (
 				<Space>
 					<Switch
+						// checked={isActive}
+						// disabled={!canToggle}
+						// onChange={(checked) =>
+						// 	onStatusToggle(record.id, checked)
+						// }
 						checked={isActive}
 						disabled={!canToggle}
-						onChange={(checked) =>
-							onStatusToggle(record.id, checked)
-						}
+						loading={loadingAction === record.id}
+						onChange={async (checked) => {
+							setLoadingAction(record.id);
+							await onStatusToggle(record.id, checked);
+							setLoadingAction(null);
+						}}
 					/>
 
 					<Tag color={isActive ? "green" : "red"}>
