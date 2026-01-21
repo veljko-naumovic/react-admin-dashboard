@@ -8,6 +8,7 @@ export const mockUsers: User[] = [
 		role: "admin",
 		status: "active",
 		createdAt: "2024-11-10T10:00:00Z",
+		departments: ["engineering_frontend"],
 	},
 	{
 		id: "2",
@@ -16,6 +17,7 @@ export const mockUsers: User[] = [
 		role: "manager",
 		status: "active",
 		createdAt: "2024-10-01T09:15:00Z",
+		departments: ["engineering_backend"],
 	},
 	{
 		id: "3",
@@ -24,5 +26,6 @@ export const mockUsers: User[] = [
 		role: "viewer",
 		status: "blocked",
 		createdAt: "2024-09-20T14:30:00Z",
+		departments: ["marketing"],
 	},
 ];

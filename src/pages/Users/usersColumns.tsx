@@ -42,6 +42,11 @@ export const getUsersColumns = ({
 		render: (date: string) => dayjs(date).format("DD.MM.YYYY"),
 	},
 	{
+		title: "Departments",
+		dataIndex: "departments",
+		render: (deps: string[]) => deps.join(", "),
+	},
+	{
 		title: "Actions",
 		render: (_, record) => (
 			<Space>

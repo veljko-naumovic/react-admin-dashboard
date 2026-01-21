@@ -1,6 +1,7 @@
-import { Modal, Form, Input, Select } from "antd";
+import { Modal, Form, Input, Select, TreeSelect } from "antd";
 import { useEffect } from "react";
 import type { User, UserRole, UserStatus } from "../../types/user";
+import { departmentsTree } from "../../constants/departments";
 
 interface Props {
 	open: boolean;
@@ -14,6 +15,7 @@ export interface UserFormValues {
 	email: string;
 	role: UserRole;
 	status: UserStatus;
+	departments: string[];
 }
 
 const UserFormModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
@@ -71,11 +73,32 @@ const UserFormModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
 				</Form.Item>
 
 				<Form.Item
+					label="Departments"
+					name="departments"
+					rules={[
+						{
+							required: true,
+							message: "Please select at least one department",
+						},
+					]}
+				>
+					<TreeSelect
+						treeData={departmentsTree}
+						treeCheckable
+						showCheckedStrategy={TreeSelect.SHOW_PARENT}
+						placeholder="Select departments"
+						allowClear
+						style={{ width: "100%" }}
+					/>
+				</Form.Item>
+
+				<Form.Item
 					label="Status"
 					name="status"
 					rules={[{ required: true }]}
 				>
 					<Select
+						placeholder="Status"
 						options={[
 							{ label: "Active", value: "active" },
 							{ label: "Blocked", value: "blocked" },

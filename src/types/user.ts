@@ -8,4 +8,5 @@ export interface User {
 	role: UserRole;
 	status: UserStatus;
 	createdAt: string;
+	departments: string[];
 }
