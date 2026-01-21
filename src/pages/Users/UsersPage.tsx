@@ -90,6 +90,7 @@ const UsersPage = () => {
 				id: crypto.randomUUID(),
 				...values,
 				createdAt: new Date().toISOString(),
+				createdBy: "System",
 			};
 
 			setUsers((prev) => [newUser, ...prev]);
