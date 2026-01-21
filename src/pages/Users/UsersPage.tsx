@@ -1,5 +1,19 @@
-import { Button, Input, Select, Table } from "antd";
+import {
+	Button,
+	Input,
+	Select,
+	Table,
+	Drawer,
+	TreeSelect,
+	DatePicker,
+	Space,
+} from "antd";
 import { useCallback, useMemo, useState } from "react";
+import { FilterOutlined } from "@ant-design/icons";
+import type { Dayjs } from "dayjs";
+import { departmentsTree } from "../../constants/departments";
+
+const { RangePicker } = DatePicker;
 
 import { mockUsers } from "./mockUsers";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -10,6 +24,7 @@ import { getUsersColumns } from "./usersColumns";
 import UserFormModal, {
 	type UserFormValues,
 } from "../../components/modals/UserFormModal";
+import dayjs from "dayjs";
 
 const UsersPage = () => {
 	const [users, setUsers] = useState<User[]>(mockUsers);
@@ -19,6 +34,11 @@ const UsersPage = () => {
 	const [page, setPage] = useState(1);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingUser, setEditingUser] = useState<User | undefined>();
+	const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+	const [departmentsFilter, setDepartmentsFilter] = useState<string[]>([]);
+	const [createdRange, setCreatedRange] = useState<
+		[Dayjs | null, Dayjs | null] | null
+	>(null);
 
 	const { user } = useAuth();
 
@@ -37,9 +57,31 @@ const UsersPage = () => {
 			const matchesRole = role ? user.role === role : true;
 			const matchesStatus = status ? user.status === status : true;
 
-			return matchesSearch && matchesRole && matchesStatus;
+			const matchesDepartments =
+				departmentsFilter.length > 0
+					? departmentsFilter.some((dep) =>
+							user.departments.includes(dep),
+						)
+					: true;
+
+			const matchesDate = createdRange
+				? dayjs(user.createdAt).isBetween(
+						createdRange[0],
+						createdRange[1],
+						"day",
+						"[]",
+					)
+				: true;
+
+			return (
+				matchesSearch &&
+				matchesRole &&
+				matchesStatus &&
+				matchesDepartments &&
+				matchesDate
+			);
 		});
-	}, [users, debouncedSearch, role, status]);
+	}, [users, debouncedSearch, role, status, departmentsFilter, createdRange]);
 
 	const handlePageChange = useCallback((page: number) => {
 		setPage(page);
@@ -148,6 +190,13 @@ const UsersPage = () => {
 				Create User
 			</Button>
 
+			<Button
+				icon={<FilterOutlined />}
+				onClick={() => setIsFilterDrawerOpen(true)}
+			>
+				Advanced filters
+			</Button>
+
 			<Table<User>
 				rowKey="id"
 				columns={columns}
@@ -165,6 +214,59 @@ const UsersPage = () => {
 				onSubmit={handleSubmit}
 				initialValues={editingUser}
 			/>
+			<Drawer
+				title="Advanced filters"
+				open={isFilterDrawerOpen}
+				onClose={() => setIsFilterDrawerOpen(false)}
+				size="small"
+			>
+				<Space
+					orientation="vertical"
+					style={{ width: "100%" }}
+					size="large"
+				>
+					{/* Departments */}
+					<div>
+						<label>Departments</label>
+						<TreeSelect
+							treeData={departmentsTree}
+							treeCheckable
+							allowClear
+							style={{ width: "100%" }}
+							placeholder="Select departments"
+							value={departmentsFilter}
+							onChange={(value) => {
+								setDepartmentsFilter(value);
+								setPage(1);
+							}}
+						/>
+					</div>
+
+					{/* Created date range */}
+					<div>
+						<label>Created date</label>
+						<RangePicker
+							style={{ width: "100%" }}
+							value={createdRange}
+							onChange={(range) => {
+								setCreatedRange(range);
+								setPage(1);
+							}}
+						/>
+					</div>
+
+					{/* Reset */}
+					<Button
+						onClick={() => {
+							setDepartmentsFilter([]);
+							setCreatedRange(null);
+							setPage(1);
+						}}
+					>
+						Reset filters
+					</Button>
+				</Space>
+			</Drawer>
 		</>
 	);
 };

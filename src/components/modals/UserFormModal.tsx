@@ -36,7 +36,7 @@ const UserFormModal = ({ open, onCancel, onSubmit, initialValues }: Props) => {
 			okText={initialValues ? "Save" : "Create"}
 			onCancel={onCancel}
 			onOk={() => form.submit()}
-			destroyOnHidden
+			forceRender
 		>
 			<Form form={form} layout="vertical" onFinish={onSubmit}>
 				<Form.Item
