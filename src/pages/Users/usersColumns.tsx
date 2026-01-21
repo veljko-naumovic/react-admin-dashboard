@@ -1,20 +1,22 @@
-import { Button, Popconfirm, Space, Tag } from "antd";
+import { Button, Popconfirm, Space, Switch, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 
 import { canEditUser, canDeleteUser } from "../../utils/permissions";
-import type { UserRole, User, UserStatus } from "../../types/user";
+import type { UserRole, User } from "../../types/user";
 
 interface ColumnsArgs {
 	role?: UserRole;
 	onEdit: (user: User) => void;
 	onDelete: (id: string) => void;
+	onStatusToggle: (id: string, checked: boolean) => void;
 }
 
 export const getUsersColumns = ({
 	role,
 	onEdit,
 	onDelete,
+	onStatusToggle,
 }: ColumnsArgs): ColumnsType<User> => [
 	{
 		title: "Name",
@@ -32,9 +34,26 @@ export const getUsersColumns = ({
 	{
 		title: "Status",
 		dataIndex: "status",
-		render: (status: UserStatus) => (
-			<Tag color={status === "active" ? "green" : "red"}>{status}</Tag>
-		),
+		render: (_status, record) => {
+			const isActive = record.status === "active";
+			const canToggle = role === "admin";
+
+			return (
+				<Space>
+					<Switch
+						checked={isActive}
+						disabled={!canToggle}
+						onChange={(checked) =>
+							onStatusToggle(record.id, checked)
+						}
+					/>
+
+					<Tag color={isActive ? "green" : "red"}>
+						{record.status}
+					</Tag>
+				</Space>
+			);
+		},
 	},
 	{
 		title: "Created",

@@ -54,10 +54,21 @@ const UsersPage = () => {
 		setIsModalOpen(true);
 	};
 
+	const handleStatusToggle = (id: string, checked: boolean) => {
+		setUsers((prev) =>
+			prev.map((u) =>
+				u.id === id
+					? { ...u, status: checked ? "active" : "blocked" }
+					: u,
+			),
+		);
+	};
+
 	const columns = getUsersColumns({
 		role: user?.role,
 		onEdit: handleEdit,
 		onDelete: handleDelete,
+		onStatusToggle: handleStatusToggle,
 	});
 
 	const handleCreate = () => {
