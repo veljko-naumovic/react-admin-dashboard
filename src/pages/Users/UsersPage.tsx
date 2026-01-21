@@ -1,5 +1,4 @@
 import {
-	Button,
 	Input,
 	Select,
 	Table,
@@ -7,7 +6,11 @@ import {
 	TreeSelect,
 	DatePicker,
 	Space,
+	Popover,
+	Button,
 } from "antd";
+
+import { MoreOutlined } from "@ant-design/icons";
 import { useCallback, useMemo, useState } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
@@ -36,6 +39,7 @@ const UsersPage = () => {
 	const [editingUser, setEditingUser] = useState<User | undefined>();
 	const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 	const [departmentsFilter, setDepartmentsFilter] = useState<string[]>([]);
+	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const [createdRange, setCreatedRange] = useState<
 		[Dayjs | null, Dayjs | null] | null
 	>(null);
@@ -141,6 +145,44 @@ const UsersPage = () => {
 		setIsModalOpen(false);
 	};
 
+	const rowSelection = {
+		selectedRowKeys,
+		onChange: (keys: React.Key[]) => {
+			setSelectedRowKeys(keys);
+		},
+	};
+
+	const clearSelection = () => setSelectedRowKeys([]);
+
+	const bulkActivate = () => {
+		setUsers((prev) =>
+			prev.map((u) =>
+				selectedRowKeys.includes(u.id) ? { ...u, status: "active" } : u,
+			),
+		);
+		clearSelection();
+	};
+
+	const bulkBlock = () => {
+		setUsers((prev) =>
+			prev.map((u) =>
+				selectedRowKeys.includes(u.id)
+					? { ...u, status: "blocked" }
+					: u,
+			),
+		);
+		clearSelection();
+	};
+
+	const bulkDelete = () => {
+		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
+		clearSelection();
+	};
+
+	const hasAdminSelected = users.some(
+		(u) => selectedRowKeys.includes(u.id) && u.role === "admin",
+	);
+
 	return (
 		<>
 			<h2>Users</h2>
@@ -197,10 +239,35 @@ const UsersPage = () => {
 				Advanced filters
 			</Button>
 
+			{user?.role === "admin" && selectedRowKeys.length > 0 && (
+				<Popover
+					trigger="click"
+					placement="bottom"
+					content={
+						<Space direction="vertical">
+							<Button onClick={bulkActivate}>Activate</Button>
+							<Button onClick={bulkBlock}>Block</Button>
+							<Button
+								danger
+								onClick={bulkDelete}
+								disabled={hasAdminSelected}
+							>
+								Delete
+							</Button>
+						</Space>
+					}
+				>
+					<Button icon={<MoreOutlined />}>
+						Bulk actions ({selectedRowKeys.length})
+					</Button>
+				</Popover>
+			)}
+
 			<Table<User>
 				rowKey="id"
 				columns={columns}
 				dataSource={filteredUsers}
+				rowSelection={rowSelection}
 				pagination={{
 					current: page,
 					pageSize: 5,
