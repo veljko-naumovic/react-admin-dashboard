@@ -1,4 +1,14 @@
-import { Button, Popconfirm, Space, Switch, Tag } from "antd";
+import {
+	Button,
+	Popconfirm,
+	Space,
+	Switch,
+	Tag,
+	Popover,
+	Typography,
+} from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import UserAuditInfo from "../../components/users/UserAuditInfo";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 
@@ -21,6 +31,19 @@ export const getUsersColumns = ({
 	{
 		title: "Name",
 		dataIndex: "name",
+		render: (_name, record) => (
+			<Space>
+				<Typography.Text>{record.name}</Typography.Text>
+
+				<Popover
+					content={<UserAuditInfo user={record} />}
+					title="Audit info"
+					trigger="click"
+				>
+					<InfoCircleOutlined style={{ color: "#1677ff" }} />
+				</Popover>
+			</Space>
+		),
 	},
 	{
 		title: "Email",

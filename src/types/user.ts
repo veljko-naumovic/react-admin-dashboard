@@ -7,6 +7,10 @@ export interface User {
 	email: string;
 	role: UserRole;
 	status: UserStatus;
-	createdAt: string;
 	departments: string[];
+	createdAt?: string;
+	createdBy: string;
+	updatedAt?: string;
+	lastLoginAt?: string;
+	lastLoginIp?: string;
 }
