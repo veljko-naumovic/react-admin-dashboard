@@ -14,7 +14,7 @@ import {
 } from "antd";
 
 import { MoreOutlined } from "@ant-design/icons";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
 import { departmentsTree } from "../../constants/departments";
@@ -49,6 +49,10 @@ const UsersPage = () => {
 	>(null);
 	const [loading, setLoading] = useState(false);
 	const [loadingAction, setLoadingAction] = useState<string | null>(null);
+
+	//Undo action
+	const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const lastUsersSnapshotRef = useRef<User[] | null>(null);
 
 	const { user } = useAuth();
 
@@ -181,36 +185,55 @@ const UsersPage = () => {
 			setLoading(false);
 		}
 	};
+
 	const bulkDelete = async () => {
 		const prevUsers = users;
 		const count = selectedRowKeys.length;
 
-		// optimistic update
+		// snapshot for undo
+		lastUsersSnapshotRef.current = prevUsers;
+
+		// optimistic delete
 		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
 
-		try {
-			setLoading(true);
-			await fakeApiCall(true);
+		notification.open({
+			message: "Users deleted",
+			description: (
+				<>
+					{count} user{count > 1 ? "s" : ""} deleted.
+					<Button
+						type="link"
+						onClick={() => {
+							if (undoTimeoutRef.current) {
+								clearTimeout(undoTimeoutRef.current);
+							}
+							if (lastUsersSnapshotRef.current) {
+								setUsers(lastUsersSnapshotRef.current);
+								lastUsersSnapshotRef.current = null;
+							}
+							notification.destroy();
+						}}
+					>
+						Undo
+					</Button>
+				</>
+			),
+			duration: 5,
+			placement: "bottomRight",
+		});
 
-			notification.success({
-				title: "Users deleted",
-				description: `${count} user${count > 1 ? "s" : ""} successfully deleted.`,
-				placement: "bottomRight",
-			});
+		// simulate backend commit after 5s
+		undoTimeoutRef.current = setTimeout(async () => {
+			try {
+				setLoading(true);
+				await fakeApiCall(true);
+			} finally {
+				setLoading(false);
+				lastUsersSnapshotRef.current = null;
+			}
+		}, 5000);
 
-			clearSelection();
-		} catch {
-			// rollback
-			setUsers(prevUsers);
-
-			notification.error({
-				title: "Bulk delete failed",
-				description: "Something went wrong. Please try again.",
-				placement: "bottomRight",
-			});
-		} finally {
-			setLoading(false);
-		}
+		clearSelection();
 	};
 
 	const handleSubmit = async (values: UserFormValues) => {
