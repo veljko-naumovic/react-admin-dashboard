@@ -10,11 +10,11 @@ import {
 	Button,
 	message,
 	Empty,
-	notification,
+	Modal,
 } from "antd";
 
 import { MoreOutlined } from "@ant-design/icons";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
 import { departmentsTree } from "../../constants/departments";
@@ -49,10 +49,6 @@ const UsersPage = () => {
 	>(null);
 	const [loading, setLoading] = useState(false);
 	const [loadingAction, setLoadingAction] = useState<string | null>(null);
-
-	//Undo action
-	const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const lastUsersSnapshotRef = useRef<User[] | null>(null);
 
 	const { user } = useAuth();
 
@@ -97,10 +93,6 @@ const UsersPage = () => {
 		});
 	}, [users, debouncedSearch, role, status, departmentsFilter, createdRange]);
 
-	const handlePageChange = useCallback((page: number) => {
-		setPage(page);
-	}, []);
-
 	const handleEdit = (user: User) => {
 		setEditingUser(user);
 		setIsModalOpen(true);
@@ -139,10 +131,6 @@ const UsersPage = () => {
 		);
 		clearSelection();
 	};
-
-	const hasAdminSelected = users.some(
-		(u) => selectedRowKeys.includes(u.id) && u.role === "admin",
-	);
 
 	const handleStatusToggle = async (id: string, checked: boolean) => {
 		const prevUsers = users;
@@ -186,54 +174,45 @@ const UsersPage = () => {
 		}
 	};
 
-	const bulkDelete = async () => {
-		const prevUsers = users;
+	const confirmBulkDelete = () => {
 		const count = selectedRowKeys.length;
 
-		// snapshot for undo
-		lastUsersSnapshotRef.current = prevUsers;
-
-		// optimistic delete
-		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
-
-		notification.open({
-			message: "Users deleted",
-			description: (
+		Modal.confirm({
+			title: "Delete users",
+			content: (
 				<>
-					{count} user{count > 1 ? "s" : ""} deleted.
-					<Button
-						type="link"
-						onClick={() => {
-							if (undoTimeoutRef.current) {
-								clearTimeout(undoTimeoutRef.current);
-							}
-							if (lastUsersSnapshotRef.current) {
-								setUsers(lastUsersSnapshotRef.current);
-								lastUsersSnapshotRef.current = null;
-							}
-							notification.destroy();
-						}}
-					>
-						Undo
-					</Button>
+					<p>
+						You are about to delete <strong>{count}</strong> user
+						{count > 1 ? "s" : ""}.
+					</p>
+					<p style={{ color: "#ff4d4f" }}>
+						This action cannot be undone.
+					</p>
 				</>
 			),
-			duration: 5,
-			placement: "bottomRight",
+			okText: "Delete",
+			okType: "danger",
+			cancelText: "Cancel",
+			onOk: bulkDelete,
 		});
+	};
 
-		// simulate backend commit after 5s
-		undoTimeoutRef.current = setTimeout(async () => {
-			try {
-				setLoading(true);
-				await fakeApiCall(true);
-			} finally {
-				setLoading(false);
-				lastUsersSnapshotRef.current = null;
-			}
-		}, 5000);
+	const bulkDelete = async () => {
+		const prevUsers = users;
 
-		clearSelection();
+		setUsers((prev) => prev.filter((u) => !selectedRowKeys.includes(u.id)));
+
+		try {
+			setLoading(true);
+			await fakeApiCall(true);
+			message.success("Users deleted");
+			clearSelection();
+		} catch {
+			setUsers(prevUsers);
+			message.error("Bulk delete failed");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleSubmit = async (values: UserFormValues) => {
@@ -280,6 +259,9 @@ const UsersPage = () => {
 		loadingAction: loadingAction,
 		setLoadingAction: setLoadingAction,
 	});
+	const hasAdminSelected = users.some(
+		(u) => selectedRowKeys.includes(u.id) && u.role === "admin",
+	);
 
 	return (
 		<>
@@ -347,7 +329,7 @@ const UsersPage = () => {
 							<Button onClick={bulkBlock}>Block</Button>
 							<Button
 								danger
-								onClick={bulkDelete}
+								onClick={confirmBulkDelete}
 								disabled={hasAdminSelected}
 							>
 								Delete
@@ -370,7 +352,9 @@ const UsersPage = () => {
 					current: page,
 					pageSize: 5,
 					total: filteredUsers.length,
-					onChange: handlePageChange,
+					onChange: (page: number) => {
+						setPage(page);
+					},
 				}}
 				loading={loading}
 				locale={{
