@@ -9,7 +9,7 @@ const Sidebar = () => {
 	const location = useLocation();
 
 	return (
-		<Sider collapsible>
+		<Sider collapsible breakpoint="lg">
 			<Menu
 				theme="dark"
 				mode="inline"

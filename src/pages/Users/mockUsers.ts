@@ -40,4 +40,17 @@ export const mockUsers: User[] = [
 		lastLoginAt: "2025-01-10T14:32:00Z",
 		lastLoginIp: "192.168.1.10",
 	},
+	{
+		id: "4",
+		name: "Ana Nikolić",
+		email: "ana@company.com",
+		role: "viewer",
+		status: "active",
+		departments: ["marketing"],
+		createdAt: "2021-09-20T14:30:00Z",
+		createdBy: "System",
+		updatedAt: "2024-08-01T09:20:00Z",
+		lastLoginAt: "2025-01-10T14:32:00Z",
+		lastLoginIp: "192.168.1.10",
+	},
 ];
