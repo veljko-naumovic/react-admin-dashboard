@@ -85,6 +85,83 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
+## 📂 Project Structure
+
+````txt
+src/
+├── auth/                 # Authentication context, provider and hooks
+├── components/           # Reusable UI components
+│   ├── modals/           # Modal components (Create/Edit User)
+│   ├── users/            # User-related UI (audit info, helpers)
+│   └── layout/           # Admin layout, sidebar, header
+├── constants/            # Static data (departments, enums, options)
+├── hooks/                # Custom hooks (useDebounce)
+├── pages/                # Application pages
+│   ├── Dashboard/        # Dashboard page and charts
+│   ├── Users/            # Users management page
+│   └── Login/            # Login page
+├── router/               # App routing & protected routes
+├── types/                # TypeScript types and interfaces
+├── utils/                # Helpers (fake API, permissions, formatters)
+├── App.tsx
+└── main.tsx
+
+## 📸 Screenshots
+
+### 🔐 Login (Demo mode)
+
+Mock login with role selection.
+
+![Login](./screenshots/login.png)
+
+---
+
+### 📊 Dashboard
+
+Dashboard overview with KPIs and charts.
+
+![Dashboard](./screenshots/dashboard.png)
+
+---
+
+### 👥 Users Management
+
+Users table with search, filters, pagination and actions.
+
+![Users Table](./screenshots/users-table.png)
+
+---
+
+### 🧾 Advanced Filters
+
+Drawer with TreeSelect and additional filters.
+
+![Advanced Filters](./screenshots/advanced-filters.png)
+
+---
+
+### ✏️ Create / Edit User
+
+Modal form with validation.
+
+![User Modal](./screenshots/user-modal.png)
+
+---
+
+### ⚡ Bulk Actions
+
+Multi-select rows with bulk operations.
+
+![Bulk Actions](./screenshots/bulk-actions.png)
+
+---
+
+### 📱 Responsive View
+
+Mobile and tablet responsive layout.
+
+![Responsive](./screenshots/responsive.png)
+
 ## 🚀 Getting Started
 
 ```bash
@@ -93,4 +170,4 @@ yarn install
 
 # Start development server
 yarn dev
-```
+````
