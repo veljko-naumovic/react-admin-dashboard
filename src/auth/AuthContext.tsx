@@ -1,18 +1,10 @@
 import { createContext } from "react";
+import type { User, UserRole } from "../types/user";
 
-type Role = "admin" | "manager" | "viewer";
-
-export interface AuthUser {
-	name: string;
-	role: Role;
-}
-
-export interface AuthContextType {
-	user: AuthUser | null;
-	login: (role: Role) => void;
+export type AuthContextType = {
+	user: User | null;
+	login: (email: string, role: UserRole) => Promise<void>;
 	logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-	undefined,
-);
+	isAuthReady: boolean;
+};
+export const AuthContext = createContext<AuthContextType | null>(null);

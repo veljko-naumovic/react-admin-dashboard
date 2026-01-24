@@ -5,12 +5,13 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
-	role: UserRole;
-	status: UserStatus;
-	departments: string[];
-	createdAt?: string;
-	createdBy: string;
-	updatedAt?: string;
-	lastLoginAt?: string;
+	role: "admin" | "manager" | "viewer";
+	status: "active" | "blocked";
+
+	// auth-related
+	lastLoginAt: string;
 	lastLoginIp?: string;
+
+	// ui helpers
+	departments?: string[];
 }

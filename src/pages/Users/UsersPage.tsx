@@ -31,7 +31,6 @@ import UserFormModal, {
 	type UserFormValues,
 } from "../../components/modals/UserFormModal";
 import { fakeApiCall } from "../../utils/fakeApi";
-import dayjs from "dayjs";
 
 const UsersPage = () => {
 	const [users, setUsers] = useState<User[]>(mockUsers);
@@ -69,29 +68,19 @@ const UsersPage = () => {
 
 			const matchesDepartments =
 				departmentsFilter.length > 0
-					? departmentsFilter.some((dep) =>
-							user.departments.includes(dep),
+					? departmentsFilter.some(
+							(dep) => user && user.departments?.includes(dep),
 						)
 					: true;
-
-			const matchesDate = createdRange
-				? dayjs(user.createdAt).isBetween(
-						createdRange[0],
-						createdRange[1],
-						"day",
-						"[]",
-					)
-				: true;
 
 			return (
 				matchesSearch &&
 				matchesRole &&
 				matchesStatus &&
-				matchesDepartments &&
-				matchesDate
+				matchesDepartments
 			);
 		});
-	}, [users, debouncedSearch, role, status, departmentsFilter, createdRange]);
+	}, [users, debouncedSearch, role, status, departmentsFilter]);
 
 	const handleEdit = (user: User) => {
 		setEditingUser(user);
@@ -232,9 +221,8 @@ const UsersPage = () => {
 			} else {
 				const newUser: User = {
 					id: crypto.randomUUID(),
+					lastLoginAt: new Date().toISOString(),
 					...values,
-					createdAt: new Date().toISOString(),
-					createdBy: "Admin",
 				};
 
 				setUsers((prev) => [newUser, ...prev]);
@@ -360,6 +348,7 @@ const UsersPage = () => {
 				locale={{
 					emptyText: <Empty description="No users found" />,
 				}}
+				scroll={{ x: 900 }}
 			/>
 			<UserFormModal
 				open={isModalOpen}

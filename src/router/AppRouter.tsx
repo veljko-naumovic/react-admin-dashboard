@@ -1,35 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AdminLayout from "../components/layout/AdminLayout";
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 import DashboardPage from "../pages/Dashboard/DashboardPage";
 import UsersPage from "../pages/Users/UsersPage";
 import LoginPage from "../pages/Login/LoginPage";
-import { useAuth } from "../auth/useAuth";
-
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-	const { user } = useAuth();
-	if (!user) return <Navigate to="/login" replace />;
-	return children;
-};
+import AdminLayout from "../components/layout/AdminLayout";
 
 const AppRouter = () => {
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/login" element={<LoginPage />} />
+		<Routes>
+			<Route path="/login" element={<LoginPage />} />
 
-				<Route
-					path="/"
-					element={
-						<ProtectedRoute>
-							<AdminLayout />
-						</ProtectedRoute>
-					}
-				>
-					<Route index element={<DashboardPage />} />
-					<Route path="users" element={<UsersPage />} />
+			<Route element={<ProtectedRoute />}>
+				<Route element={<AdminLayout />}>
+					<Route path="/dashboard" element={<DashboardPage />} />
+					<Route path="/users" element={<UsersPage />} />
 				</Route>
-			</Routes>
-		</BrowserRouter>
+			</Route>
+
+			<Route path="*" element={<Navigate to="/dashboard" replace />} />
+		</Routes>
 	);
 };
 

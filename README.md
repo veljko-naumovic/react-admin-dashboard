@@ -97,3 +97,59 @@ src/
 ├── utils/             # Helpers (fake API, etc.)
 └── App.tsx
 ```
+
+## 📸 Screenshots
+
+### 🔐 Login (Demo mode)
+
+Mock login with demo credentials and role selection.
+
+![Login](./screenshots/login.png)
+
+---
+
+### 📊 Dashboard
+
+Overview with KPIs, charts and responsive layout.
+
+![Dashboard](./screenshots/dashboard.png)
+
+---
+
+### 👥 Users Management
+
+Users table with search, filters, pagination and actions.
+
+![Users Table](./screenshots/users-table.png)
+
+---
+
+### 🧾 Advanced Filters
+
+Drawer with TreeSelect and date range filters.
+
+![Advanced Filters](./screenshots/advanced-filters.png)
+
+---
+
+### ✏️ Create / Edit User
+
+Modal form with validation and TreeSelect.
+
+![User Modal](./screenshots/user-modal.png)
+
+---
+
+### ⚡ Bulk Actions
+
+Multi-select rows with bulk activate, block and delete actions.
+
+![Bulk Actions](./screenshots/bulk-actions.png)
+
+---
+
+### 📱 Responsive View
+
+Responsive layout on smaller screen sizes.
+
+![Responsive](./screenshots/responsive.png)
