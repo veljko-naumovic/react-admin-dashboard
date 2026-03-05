@@ -1,4 +1,4 @@
-# 🚀 React Admin Dashboard
+#  React Admin Dashboard
 
 A modern **admin dashboard application** built with **React 18, TypeScript and Ant Design**, focused on real-world frontend patterns such as CRUD operations, role-based access control, advanced filtering, optimistic UI updates and responsive layouts.
 
@@ -6,20 +6,20 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🔐 Authentication & Roles (Mocked)
+###  Authentication & Roles (Mocked)
 
 - Login / Logout flow
 - Role-based permissions (`admin`, `manager`, `viewer`)
 - Protected routes
 - Persistent auth state (localStorage)
 
-> ℹ️ Authentication is mocked to keep the focus on frontend architecture and UX.
+>  Authentication is mocked to keep the focus on frontend architecture and UX.
 
 ---
 
-### 👥 Users Management
+###  Users Management
 
 - Users table with pagination
 - Debounced search (name / email)
@@ -38,7 +38,7 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-### ⚡ UX & State Management
+###  UX & State Management
 
 - Optimistic UI updates
 - Loading and error states
@@ -50,7 +50,7 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-### 📊 Dashboard
+###  Dashboard
 
 - KPI cards (Total / Active / Blocked users)
 - Donut chart (users by role)
@@ -62,7 +62,7 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-### 📱 Responsive Design
+###  Responsive Design
 
 - Mobile-first layout
 - Responsive Grid (`Row` / `Col`)
@@ -72,7 +72,7 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - **React 18**
 - **TypeScript**
@@ -85,7 +85,7 @@ This project is designed as a **portfolio-grade application**, showcasing **prod
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ````txt
 src/
@@ -106,9 +106,9 @@ src/
 ├── App.tsx
 └── main.tsx
 
-## 📸 Screenshots
+##  Screenshots
 
-### 🔐 Login (Demo mode)
+###  Login (Demo mode)
 
 Mock login with role selection.
 
@@ -116,7 +116,7 @@ Mock login with role selection.
 
 ---
 
-### 📊 Dashboard
+###  Dashboard
 
 Dashboard overview with KPIs and charts.
 
@@ -132,7 +132,7 @@ Users table with search, filters, pagination and actions.
 
 ---
 
-### 🧾 Advanced Filters
+###  Advanced Filters
 
 Drawer with TreeSelect and additional filters.
 
@@ -140,7 +140,7 @@ Drawer with TreeSelect and additional filters.
 
 ---
 
-### ✏️ Create / Edit User
+###  Create / Edit User
 
 Modal form with validation.
 
@@ -148,7 +148,7 @@ Modal form with validation.
 
 ---
 
-### ⚡ Bulk Actions
+###  Bulk Actions
 
 Multi-select rows with bulk operations.
 
@@ -156,13 +156,13 @@ Multi-select rows with bulk operations.
 
 ---
 
-### 📱 Responsive View
+###  Responsive View
 
 Mobile and tablet responsive layout.
 
 ![Responsive](./screenshots/responsive.png)
 
-## 🚀 Getting Started
+##  Getting Started
 
 ```bash
 # Install dependencies
