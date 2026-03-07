@@ -1,0 +1,31 @@
+/* Root app container */
+
+.app {
+    width: 100%;
+    height: 100%;
+}
+
+/* Global page wrapper */
+
+.page-container {
+    padding: 16px;
+}
+
+/* Page titles */
+
+.page-title {
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+/* Cards spacing (useful for dashboard) */
+
+.dashboard-row {
+    margin-top: 24px;
+}
+
+/* Prevent horizontal overflow */
+
+.app-layout {
+    overflow-x: hidden;
+}

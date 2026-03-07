@@ -1,8 +1,11 @@
+/* Global reset */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
+
+/* Root layout */
 
 html,
 body,
@@ -11,18 +14,25 @@ body,
     margin: 0;
 }
 
+/* Prevent layout shift when scrollbar appears */
 html {
     scrollbar-gutter: stable;
 }
 
+/* Prevent double scrollbars */
 body {
     overflow: hidden;
 }
 
+/* Root container */
 #root {
     display: flex;
+    width: 100%;
 }
 
+/* Scrollbar */
+
+/* Chrome, Edge, Safari */
 
 ::-webkit-scrollbar {
     width: 8px;
@@ -48,4 +58,9 @@ body {
 * {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
