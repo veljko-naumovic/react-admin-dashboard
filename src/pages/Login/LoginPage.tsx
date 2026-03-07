@@ -1,5 +1,5 @@
 import { Button, Card, Form, Input, Alert, Radio, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import { useState } from "react";
 import type { UserRole } from "../../types/user";
@@ -9,21 +9,32 @@ import "../../styles/login.css";
 const { Title } = Typography;
 
 const LoginPage = () => {
-	const { login } = useAuth();
+	const { login, user } = useAuth();
 	const navigate = useNavigate();
+
 	const [role, setRole] = useState<UserRole>("admin");
+
+	/* Redirect if already logged in */
+
+	if (user) {
+		return <Navigate to="/dashboard" replace />;
+	}
 
 	const onFinish = async (values: { email: string; password: string }) => {
 		await login(values.email, role);
-		navigate("/dashboard");
+
+		/* replace history so user can't go back to login */
+
+		navigate("/dashboard", { replace: true });
 	};
 
 	return (
 		<div className="login-page">
 			<div className="login-wrapper">
-				{/* Logo and title */}
-				<div className="login-logo">
-					<img src="/favicon.png" alt="logo" />
+				{/* Logo + Title */}
+
+				<div className="login-header">
+					<img src="/favicon.png" alt="logo" className="login-logo" />
 
 					<Title level={3} className="login-title">
 						Admin Dashboard
@@ -90,12 +101,7 @@ const LoginPage = () => {
 							<Input.Password />
 						</Form.Item>
 
-						<Button
-							type="primary"
-							htmlType="submit"
-							block
-							className="login-button"
-						>
+						<Button type="primary" htmlType="submit" block>
 							Login
 						</Button>
 					</Form>
