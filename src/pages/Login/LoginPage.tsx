@@ -4,6 +4,8 @@ import { useAuth } from "../../auth/useAuth";
 import { useState } from "react";
 import type { UserRole } from "../../types/user";
 
+import "../../styles/login.css";
+
 const { Title } = Typography;
 
 const LoginPage = () => {
@@ -17,44 +19,24 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div
-			style={{
-				minHeight: "100vh",
-				width: "100%",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				background: "#f5f5f5",
-				padding: 16,
-			}}
-		>
-			<div style={{ textAlign: "center" }}>
+		<div className="login-page">
+			<div className="login-wrapper">
 				{/* Logo and title */}
-				<div
-					style={{
-						marginBottom: 24,
-						display: "flex",
-						justifyContent: "center",
-					}}
-				>
-					<img
-						src="/favicon.png"
-						alt="logo"
-						style={{ height: 40, marginRight: 10 }}
-					/>
+				<div className="login-logo">
+					<img src="/favicon.png" alt="logo" />
 
-					<Title level={3} style={{ margin: 0 }}>
+					<Title level={3} className="login-title">
 						Admin Dashboard
 					</Title>
 				</div>
 
-				<Card title="Login" style={{ width: 380 }}>
+				<Card title="Login" className="login-card">
 					<Alert
 						type="info"
 						showIcon
 						title="Demo mode"
 						description="Select a role to preview permissions."
-						style={{ marginBottom: 16 }}
+						className="login-alert"
 					/>
 
 					<Form
@@ -71,9 +53,11 @@ const LoginPage = () => {
 								onChange={(e) => setRole(e.target.value)}
 							>
 								<Radio.Button value="admin">Admin</Radio.Button>
+
 								<Radio.Button value="manager">
 									Manager
 								</Radio.Button>
+
 								<Radio.Button value="viewer">
 									Viewer
 								</Radio.Button>
@@ -83,7 +67,12 @@ const LoginPage = () => {
 						<Form.Item
 							name="email"
 							label="Email"
-							rules={[{ required: true, message: "Enter email" }]}
+							rules={[
+								{
+									required: true,
+									message: "Enter email",
+								},
+							]}
 						>
 							<Input />
 						</Form.Item>
@@ -101,7 +90,12 @@ const LoginPage = () => {
 							<Input.Password />
 						</Form.Item>
 
-						<Button type="primary" htmlType="submit" block>
+						<Button
+							type="primary"
+							htmlType="submit"
+							block
+							className="login-button"
+						>
 							Login
 						</Button>
 					</Form>
