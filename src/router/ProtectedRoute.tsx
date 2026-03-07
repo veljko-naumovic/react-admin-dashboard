@@ -2,20 +2,15 @@ import { Navigate, Outlet } from "react-router-dom";
 import { Spin } from "antd";
 import { useAuth } from "../auth/useAuth";
 
+import "../styles/auth.css";
+
 const ProtectedRoute = () => {
 	const auth = useAuth();
 
-	// auth state - is ready
+	// wait until auth is initialized
 	if (!auth?.isAuthReady) {
 		return (
-			<div
-				style={{
-					minHeight: "100vh",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
+			<div className="auth-loading">
 				<Spin size="large" />
 			</div>
 		);
