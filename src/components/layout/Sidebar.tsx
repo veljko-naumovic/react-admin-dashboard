@@ -6,9 +6,11 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
+import "../../styles/sidebar.css";
+
 interface SidebarProps {
 	collapsed: boolean;
-	onNavigate?: () => void; // only for a mobile drawer
+	onNavigate?: () => void;
 }
 
 const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
@@ -16,19 +18,14 @@ const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
 	const location = useLocation();
 
 	return (
-		<div style={{ height: "100%" }}>
-			{/*  Close button (only for a mobile drawer) */}
+		<div className="sidebar">
+			{/* Close button (mobile drawer only) */}
+
 			{onNavigate && (
-				<div
-					style={{
-						padding: 12,
-						textAlign: "right",
-						backgroundColor: "#002140",
-					}}
-				>
+				<div className="sidebar-close">
 					<Button
 						type="text"
-						icon={<CloseOutlined style={{ color: "whitesmoke" }} />}
+						icon={<CloseOutlined />}
 						onClick={onNavigate}
 					/>
 				</div>
@@ -41,9 +38,9 @@ const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
 				selectedKeys={[location.pathname]}
 				onClick={({ key }) => {
 					navigate(key);
-					onNavigate?.(); // Close drawer on click
+					onNavigate?.();
 				}}
-				style={{ height: "100%", borderRight: 0 }}
+				className="sidebar-menu"
 				items={[
 					{
 						key: "/dashboard",

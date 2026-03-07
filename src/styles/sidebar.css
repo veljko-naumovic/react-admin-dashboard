@@ -1,0 +1,25 @@
+/* ========================
+   SIDEBAR
+======================== */
+
+.sidebar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* close header */
+
+.sidebar-close {
+    padding: 12px;
+    text-align: right;
+    background-color: #002140;
+}
+
+/* menu */
+
+.sidebar-menu {
+    flex: 1;
+    border-right: 0;
+    overflow: hidden;
+}

@@ -46,7 +46,10 @@
 
 .users-table-wrapper {
     width: 100%;
-    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
 }
 
 /* Prevent table shrinking */

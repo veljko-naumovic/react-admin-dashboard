@@ -352,10 +352,10 @@ const UsersPage = () => {
 						onChange: (page) => setPage(page),
 					}}
 					loading={loading}
-					scroll={{ x: 900 }}
 					locale={{
 						emptyText: <Empty description="No users found" />,
 					}}
+					scroll={{ x: "max-content" }}
 				/>
 			</div>
 
