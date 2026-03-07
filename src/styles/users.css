@@ -1,0 +1,66 @@
+.users-page {
+    width: 100%;
+}
+
+/* page title */
+
+.users-title {
+    margin-bottom: 16px;
+}
+
+/* Filter bar */
+
+.users-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.users-select {
+    width: 150px;
+}
+
+.users-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.bulk-actions {
+    margin-bottom: 16px;
+}
+
+/* Filter Drawer */
+
+.filter-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.filter-section {
+    width: 100%;
+}
+
+.users-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Prevent table shrinking */
+
+.users-table-wrapper .ant-table {
+    min-width: 900px;
+}
+
+@media (max-width: 768px) {
+    .users-select {
+        width: 100%;
+    }
+
+    .users-filters {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,71 @@
+/* Main Layout */
+
+.app-layout {
+    height: 100vh;
+}
+
+.app-header {
+    background: #fff;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* left side */
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* logo */
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo img {
+    height: 32px;
+    cursor: pointer;
+}
+
+/* flex spacer */
+
+.header-spacer {
+    flex: 1;
+}
+
+/* right side */
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+/* user info */
+
+.header-user {
+    margin-right: 12px;
+}
+
+.app-content {
+    padding: 16px;
+    overflow: auto;
+    background: #f5f5f5;
+}
+
+.app-sider {
+    height: 100vh;
+}
+
+@media (max-width: 768px) {
+
+    .header-user {
+        display: none;
+    }
+
+}

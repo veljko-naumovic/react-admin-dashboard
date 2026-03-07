@@ -15,6 +15,8 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "../../auth/useAuth";
 import { useState } from "react";
 
+import "../../styles/layout.css";
+
 const { Header, Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
@@ -38,8 +40,9 @@ const AdminLayout = () => {
 	];
 
 	return (
-		<Layout style={{ height: "100vh" }}>
-			{/* DESKTOP SIDEBAR */}
+		<Layout className="app-layout">
+			{/* Desktop Sidebar */}
+
 			{!isMobile && (
 				<Sider
 					width={220}
@@ -47,12 +50,14 @@ const AdminLayout = () => {
 					collapsed={collapsed}
 					onCollapse={setCollapsed}
 					breakpoint="lg"
+					className="app-sider"
 				>
 					<Sidebar collapsed={collapsed} />
 				</Sider>
 			)}
 
 			{/* Mobile Drawer */}
+
 			{isMobile && (
 				<Drawer
 					open={drawerOpen}
@@ -73,24 +78,10 @@ const AdminLayout = () => {
 			)}
 
 			<Layout>
-				{/* Header */}
-				<Header
-					style={{
-						background: "#fff",
-						padding: "0 12px",
-						display: "flex",
-						alignItems: "center",
-						gap: 12,
-					}}
-				>
+				<Header className="app-header">
 					{/* Left */}
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							gap: 10,
-						}}
-					>
+
+					<div className="header-left">
 						{isMobile && (
 							<Button
 								icon={<MenuOutlined />}
@@ -102,17 +93,10 @@ const AdminLayout = () => {
 						{isXs ? (
 							<span style={{ fontWeight: 600 }}>Admin</span>
 						) : (
-							<div
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: 10,
-								}}
-							>
+							<div className="header-logo">
 								<img
 									src="/favicon.png"
 									alt="logo"
-									style={{ height: 32, cursor: "pointer" }}
 									onClick={() => navigate("/dashboard")}
 								/>
 
@@ -127,10 +111,12 @@ const AdminLayout = () => {
 					</div>
 
 					{/* Flex space */}
-					<div style={{ flex: 1 }} />
+
+					<div className="header-spacer" />
 
 					{/* Right */}
-					<div>
+
+					<div className="header-right">
 						{isXs ? (
 							<Dropdown
 								menu={{ items: userMenu }}
@@ -140,22 +126,19 @@ const AdminLayout = () => {
 							</Dropdown>
 						) : (
 							<>
-								<span style={{ marginRight: 12 }}>
+								<span className="header-user">
 									{user?.name} ({user?.role})
 								</span>
+
 								<Button onClick={logout}>Logout</Button>
 							</>
 						)}
 					</div>
 				</Header>
+
 				{/* Content */}
-				<Content
-					style={{
-						padding: 16,
-						overflow: "auto",
-						background: "#f5f5f5",
-					}}
-				>
+
+				<Content className="app-content">
 					<Outlet />
 				</Content>
 			</Layout>

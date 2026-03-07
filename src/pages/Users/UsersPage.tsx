@@ -13,14 +13,13 @@ import {
 	Modal,
 } from "antd";
 
-import { MoreOutlined } from "@ant-design/icons";
+import { MoreOutlined, FilterOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
-import { FilterOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
+
+import "../../styles/users.css";
+
 import { departmentsTree } from "../../constants/departments";
-
-const { RangePicker } = DatePicker;
-
 import { mockUsers } from "./mockUsers";
 import { useDebounce } from "../../hooks/useDebounce";
 import type { User, UserRole, UserStatus } from "../../types/user";
@@ -31,6 +30,8 @@ import UserFormModal, {
 	type UserFormValues,
 } from "../../components/modals/UserFormModal";
 import { fakeApiCall } from "../../utils/fakeApi";
+
+const { RangePicker } = DatePicker;
 
 const UsersPage = () => {
 	const [users, setUsers] = useState<User[]>(mockUsers);
@@ -50,7 +51,6 @@ const UsersPage = () => {
 	const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
 	const { user } = useAuth();
-
 	const debouncedSearch = useDebounce(search);
 
 	const filteredUsers = useMemo(() => {
@@ -68,8 +68,8 @@ const UsersPage = () => {
 
 			const matchesDepartments =
 				departmentsFilter.length > 0
-					? departmentsFilter.some(
-							(dep) => user && user.departments?.includes(dep),
+					? departmentsFilter.some((dep) =>
+							user?.departments?.includes(dep),
 						)
 					: true;
 
@@ -81,6 +81,8 @@ const UsersPage = () => {
 			);
 		});
 	}, [users, debouncedSearch, role, status, departmentsFilter]);
+
+	/* Crud actions */
 
 	const handleEdit = (user: User) => {
 		setEditingUser(user);
@@ -124,7 +126,6 @@ const UsersPage = () => {
 	const handleStatusToggle = async (id: string, checked: boolean) => {
 		const prevUsers = users;
 
-		// optimistic update
 		setUsers((prev) =>
 			prev.map((u) =>
 				u.id === id
@@ -138,7 +139,6 @@ const UsersPage = () => {
 			await fakeApiCall(true);
 			message.success("Status updated");
 		} catch {
-			// rollback
 			setUsers(prevUsers);
 			message.error("Failed to update status");
 		} finally {
@@ -244,18 +244,20 @@ const UsersPage = () => {
 		onEdit: handleEdit,
 		onDelete: handleDelete,
 		onStatusToggle: handleStatusToggle,
-		loadingAction: loadingAction,
-		setLoadingAction: setLoadingAction,
+		loadingAction,
+		setLoadingAction,
 	});
+
 	const hasAdminSelected = users.some(
 		(u) => selectedRowKeys.includes(u.id) && u.role === "admin",
 	);
 
 	return (
-		<>
-			<h2>Users</h2>
+		<div className="users-page">
+			<h2 className="users-title">Users</h2>
 
-			<div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+			{/* Filters */}
+			<div className="users-filters">
 				<Input
 					placeholder="Search by name or email"
 					value={search}
@@ -269,7 +271,7 @@ const UsersPage = () => {
 				<Select
 					placeholder="Role"
 					allowClear
-					style={{ width: 150 }}
+					className="users-select"
 					onChange={(value) => {
 						setRole(value);
 						setPage(1);
@@ -284,7 +286,7 @@ const UsersPage = () => {
 				<Select
 					placeholder="Status"
 					allowClear
-					style={{ width: 150 }}
+					className="users-select"
 					onChange={(value) => {
 						setStatus(value);
 						setPage(1);
@@ -296,66 +298,76 @@ const UsersPage = () => {
 				/>
 			</div>
 
-			<Button type="primary" onClick={handleCreate}>
-				Create User
-			</Button>
+			{/* Action buttons */}
+			<div className="users-actions">
+				<Button type="primary" onClick={handleCreate}>
+					Create User
+				</Button>
 
-			<Button
-				icon={<FilterOutlined />}
-				onClick={() => setIsFilterDrawerOpen(true)}
-			>
-				Advanced filters
-			</Button>
-
-			{user?.role === "admin" && selectedRowKeys.length > 0 && (
-				<Popover
-					trigger="click"
-					placement="bottom"
-					content={
-						<Space orientation="vertical">
-							<Button onClick={bulkActivate}>Activate</Button>
-							<Button onClick={bulkBlock}>Block</Button>
-							<Button
-								danger
-								onClick={confirmBulkDelete}
-								disabled={hasAdminSelected}
-							>
-								Delete
-							</Button>
-						</Space>
-					}
+				<Button
+					icon={<FilterOutlined />}
+					onClick={() => setIsFilterDrawerOpen(true)}
 				>
-					<Button icon={<MoreOutlined />}>
-						Bulk actions ({selectedRowKeys.length})
-					</Button>
-				</Popover>
-			)}
+					Advanced filters
+				</Button>
 
-			<Table<User>
-				rowKey="id"
-				columns={columns}
-				dataSource={filteredUsers}
-				rowSelection={rowSelection}
-				pagination={{
-					current: page,
-					pageSize: 5,
-					total: filteredUsers.length,
-					onChange: (page: number) => {
-						setPage(page);
-					},
-				}}
-				loading={loading}
-				locale={{
-					emptyText: <Empty description="No users found" />,
-				}}
-				scroll={{ x: 900 }}
-			/>
+				{user?.role === "admin" && selectedRowKeys.length > 0 && (
+					<Popover
+						trigger="click"
+						placement="bottom"
+						content={
+							<Space direction="vertical">
+								<Button onClick={bulkActivate}>Activate</Button>
+
+								<Button onClick={bulkBlock}>Block</Button>
+
+								<Button
+									danger
+									onClick={confirmBulkDelete}
+									disabled={hasAdminSelected}
+								>
+									Delete
+								</Button>
+							</Space>
+						}
+					>
+						<Button icon={<MoreOutlined />}>
+							Bulk actions ({selectedRowKeys.length})
+						</Button>
+					</Popover>
+				)}
+			</div>
+
+			{/* Table */}
+			<div className="users-table-wrapper">
+				<Table<User>
+					rowKey="id"
+					columns={columns}
+					dataSource={filteredUsers}
+					rowSelection={rowSelection}
+					pagination={{
+						current: page,
+						pageSize: 5,
+						total: filteredUsers.length,
+						onChange: (page) => setPage(page),
+					}}
+					loading={loading}
+					scroll={{ x: 900 }}
+					locale={{
+						emptyText: <Empty description="No users found" />,
+					}}
+				/>
+			</div>
+
+			{/* User modal */}
 			<UserFormModal
 				open={isModalOpen}
 				onCancel={() => setIsModalOpen(false)}
 				onSubmit={handleSubmit}
 				initialValues={editingUser}
 			/>
+
+			{/* Filter Drawer */}
 			<Drawer
 				title="Advanced filters"
 				open={isFilterDrawerOpen}
@@ -363,13 +375,13 @@ const UsersPage = () => {
 				size="small"
 			>
 				<Space
-					orientation="vertical"
-					style={{ width: "100%" }}
+					direction="vertical"
 					size="large"
+					style={{ width: "100%" }}
 				>
-					{/* Departments */}
-					<div>
+					<div className="filter-section">
 						<label>Departments</label>
+
 						<TreeSelect
 							treeData={departmentsTree}
 							treeCheckable
@@ -384,9 +396,9 @@ const UsersPage = () => {
 						/>
 					</div>
 
-					{/* Created date range */}
-					<div>
+					<div className="filter-section">
 						<label>Created date</label>
+
 						<RangePicker
 							style={{ width: "100%" }}
 							value={createdRange}
@@ -397,7 +409,6 @@ const UsersPage = () => {
 						/>
 					</div>
 
-					{/* Reset */}
 					<Button
 						onClick={() => {
 							setDepartmentsFilter([]);
@@ -409,7 +420,7 @@ const UsersPage = () => {
 					</Button>
 				</Space>
 			</Drawer>
-		</>
+		</div>
 	);
 };
 
