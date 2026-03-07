@@ -12,6 +12,8 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 
+import "../../styles/users-table.css";
+
 import UserAuditInfo from "../../components/users/UserAuditInfo";
 import { canEditUser, canDeleteUser } from "../../utils/permissions";
 import type { User, UserRole } from "../../types/user";
@@ -40,15 +42,8 @@ export const getUsersColumns = ({
 		width: 220,
 		fixed: "left",
 		render: (_, record) => (
-			<div
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-					gap: 8,
-				}}
-			>
-				<Typography.Text strong ellipsis style={{ maxWidth: 160 }}>
+			<div className="users-name-cell">
+				<Typography.Text strong ellipsis className="users-name-text">
 					{record.name}
 				</Typography.Text>
 
@@ -57,23 +52,18 @@ export const getUsersColumns = ({
 					title="Audit info"
 					trigger="click"
 				>
-					<InfoCircleOutlined
-						style={{
-							color: "#1677ff",
-							cursor: "pointer",
-							flexShrink: 0,
-						}}
-					/>
+					<InfoCircleOutlined className="users-info-icon" />
 				</Popover>
 			</div>
 		),
 	},
+
 	{
 		title: "Email",
 		dataIndex: "email",
 		key: "email",
 		width: 220,
-		responsive: ["md"], // hide on mobile
+		responsive: ["md"],
 	},
 
 	{
@@ -94,7 +84,7 @@ export const getUsersColumns = ({
 			const canToggle = role === "admin";
 
 			return (
-				<Space>
+				<div className="users-status">
 					<Tooltip title="Only admin can change status">
 						<Switch
 							checked={isActive}
@@ -111,7 +101,7 @@ export const getUsersColumns = ({
 					<Tag color={isActive ? "green" : "red"}>
 						{record.status}
 					</Tag>
-				</Space>
+				</div>
 			);
 		},
 	},
@@ -130,7 +120,7 @@ export const getUsersColumns = ({
 		dataIndex: "departments",
 		key: "departments",
 		width: 220,
-		responsive: ["lg"], // desktop only
+		responsive: ["lg"],
 		render: (deps: string[]) => deps.join(", "),
 	},
 
