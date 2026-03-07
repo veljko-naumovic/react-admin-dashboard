@@ -6,9 +6,11 @@ import {
 	Dropdown,
 	Avatar,
 	type MenuProps,
+	Typography,
 } from "antd";
 import { Outlet } from "react-router-dom";
 import { LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../../auth/useAuth";
 import { useState } from "react";
@@ -22,6 +24,10 @@ const AdminLayout = () => {
 	const isMobile = !screens.lg;
 	const isXs = !screens.sm;
 
+	const [collapsed, setCollapsed] = useState(false);
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	const navigate = useNavigate();
+
 	const userMenu: MenuProps["items"] = [
 		{
 			key: "logout",
@@ -31,11 +37,8 @@ const AdminLayout = () => {
 		},
 	];
 
-	const [collapsed, setCollapsed] = useState(false);
-	const [drawerOpen, setDrawerOpen] = useState(false);
-
 	return (
-		<Layout style={{ minHeight: "100vh" }}>
+		<Layout style={{ height: "100vh" }}>
 			{/* DESKTOP SIDEBAR */}
 			{!isMobile && (
 				<Sider
@@ -44,11 +47,6 @@ const AdminLayout = () => {
 					collapsed={collapsed}
 					onCollapse={setCollapsed}
 					breakpoint="lg"
-					style={{
-						position: "sticky",
-						top: 0,
-						height: "100vh",
-					}}
 				>
 					<Sidebar collapsed={collapsed} />
 				</Sider>
@@ -61,13 +59,11 @@ const AdminLayout = () => {
 					placement="left"
 					size={220}
 					onClose={() => setDrawerOpen(false)}
-					closable={false} // ⬅️ uklanja X
-					// headerStyle={{ display: "none" }} // ⬅️ uklanja header
+					closable={false}
 					styles={{
 						header: { display: "none" },
 						body: { padding: 0 },
 					}}
-					// bodyStyle={{ padding: 0 }}
 				>
 					<Sidebar
 						collapsed={false}
@@ -77,13 +73,14 @@ const AdminLayout = () => {
 			)}
 
 			<Layout>
+				{/* HEADER */}
 				<Header
 					style={{
 						background: "#fff",
 						padding: "0 12px",
 						display: "flex",
 						alignItems: "center",
-						justifyContent: "space-between",
+						gap: 12,
 					}}
 				>
 					{/* LEFT */}
@@ -91,7 +88,7 @@ const AdminLayout = () => {
 						style={{
 							display: "flex",
 							alignItems: "center",
-							gap: 8,
+							gap: 10,
 						}}
 					>
 						{isMobile && (
@@ -102,10 +99,35 @@ const AdminLayout = () => {
 							/>
 						)}
 
-						<span style={{ fontWeight: 600 }}>
-							{isXs ? "Admin" : "Admin Dashboard"}
-						</span>
+						{isXs ? (
+							<span style={{ fontWeight: 600 }}>Admin</span>
+						) : (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: 10,
+								}}
+							>
+								<img
+									src="/favicon.png"
+									alt="logo"
+									style={{ height: 32, cursor: "pointer" }}
+									onClick={() => navigate("/dashboard")}
+								/>
+
+								<Typography.Title
+									level={4}
+									style={{ margin: 0 }}
+								>
+									Admin Dashboard
+								</Typography.Title>
+							</div>
+						)}
 					</div>
+
+					{/* FLEX SPACER */}
+					<div style={{ flex: 1 }} />
 
 					{/* RIGHT */}
 					<div>
@@ -126,8 +148,14 @@ const AdminLayout = () => {
 						)}
 					</div>
 				</Header>
-
-				<Content style={{ padding: 16, overflowX: "hidden" }}>
+				{/* CONTENT */}
+				<Content
+					style={{
+						padding: 16,
+						overflow: "auto",
+						background: "#f5f5f5",
+					}}
+				>
 					<Outlet />
 				</Content>
 			</Layout>
