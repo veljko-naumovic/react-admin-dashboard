@@ -3,15 +3,16 @@ import { Line, Pie, Column } from "@ant-design/charts";
 import { useEffect, useMemo, useState } from "react";
 
 import { mockUsers } from "../Users/mockUsers";
+import "../../styles/dashboard.css";
 
 const KpiSkeleton = () => (
-	<Card>
+	<Card className="dashboard-card kpi-skeleton">
 		<Skeleton active title={{ width: "60%" }} paragraph={false} />
 	</Card>
 );
 
 const ChartSkeleton = () => (
-	<Card>
+	<Card className="chart-card">
 		<Skeleton active paragraph={{ rows: 6 }} />
 	</Card>
 );
@@ -19,7 +20,6 @@ const ChartSkeleton = () => (
 const DashboardPage = () => {
 	const [loading, setLoading] = useState(true);
 
-	/* Simulate API load */
 	useEffect(() => {
 		const timer = setTimeout(() => setLoading(false), 1000);
 		return () => clearTimeout(timer);
@@ -28,8 +28,6 @@ const DashboardPage = () => {
 	const totalUsers = mockUsers.length;
 	const activeUsers = mockUsers.filter((u) => u.status === "active").length;
 	const blockedUsers = mockUsers.filter((u) => u.status === "blocked").length;
-
-	// Chart data
 
 	const usersByRole = useMemo(
 		() => [
@@ -76,14 +74,14 @@ const DashboardPage = () => {
 	}, [usersByRole]);
 
 	return (
-		<>
-			{/* Cards */}
+		<div className="dashboard-page">
+			{/* KPI CARDS */}
 			<Row gutter={[16, 16]}>
 				<Col xs={24} xl={8}>
 					{loading ? (
 						<KpiSkeleton />
 					) : (
-						<Card>
+						<Card className="dashboard-card">
 							<Statistic title="Total users" value={totalUsers} />
 						</Card>
 					)}
@@ -93,13 +91,10 @@ const DashboardPage = () => {
 					{loading ? (
 						<KpiSkeleton />
 					) : (
-						<Card>
+						<Card className="dashboard-card stat-active">
 							<Statistic
 								title="Active users"
 								value={activeUsers}
-								styles={{
-									content: { color: "#3f8600" },
-								}}
 							/>
 						</Card>
 					)}
@@ -109,13 +104,10 @@ const DashboardPage = () => {
 					{loading ? (
 						<KpiSkeleton />
 					) : (
-						<Card>
+						<Card className="dashboard-card stat-blocked">
 							<Statistic
 								title="Blocked users"
 								value={blockedUsers}
-								styles={{
-									content: { color: "#cf1322" },
-								}}
 							/>
 						</Card>
 					)}
@@ -123,12 +115,12 @@ const DashboardPage = () => {
 			</Row>
 
 			{/* Donut + Column */}
-			<Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+			<Row gutter={[16, 16]} className="dashboard-section">
 				<Col xs={24} xl={12}>
 					{loading ? (
 						<ChartSkeleton />
 					) : (
-						<Card title="Users by role">
+						<Card title="Users by role" className="chart-card">
 							<Pie
 								data={data}
 								angleField="value"
@@ -140,25 +132,14 @@ const DashboardPage = () => {
 										type: string;
 										value: number;
 									}) => `${Math.round(item.value * 100)} %`,
-									style: {
-										fontWeight: "bold",
-										fontSize: "20px",
-									},
+									className: "pie-label",
 								}}
 								statistic={{
 									title: {
 										content: "Total users",
-										style: {
-											fontSize: 14,
-											color: "#8c8c8c",
-										},
 									},
 									content: {
 										content: "100%",
-										style: {
-											fontSize: 24,
-											fontWeight: 700,
-										},
 									},
 								}}
 								legend={{
@@ -166,12 +147,10 @@ const DashboardPage = () => {
 								}}
 								tooltip={{
 									items: [
-										(data) => {
-											return {
-												name: data.type,
-												value: `${data.value * 100}%`,
-											};
-										},
+										(data) => ({
+											name: data.type,
+											value: `${data.value * 100}%`,
+										}),
 									],
 								}}
 							/>
@@ -183,7 +162,7 @@ const DashboardPage = () => {
 					{loading ? (
 						<ChartSkeleton />
 					) : (
-						<Card title="Users by status">
+						<Card title="Users by status" className="chart-card">
 							<Column
 								data={usersByStatus}
 								xField="status"
@@ -198,12 +177,12 @@ const DashboardPage = () => {
 			</Row>
 
 			{/* Line Chart */}
-			<Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+			<Row gutter={[16, 16]} className="dashboard-section">
 				<Col xs={24}>
 					{loading ? (
 						<ChartSkeleton />
 					) : (
-						<Card title="Users growth">
+						<Card title="Users growth" className="chart-card">
 							<Line
 								data={usersGrowth}
 								xField="month"
@@ -214,7 +193,7 @@ const DashboardPage = () => {
 					)}
 				</Col>
 			</Row>
-		</>
+		</div>
 	);
 };
 

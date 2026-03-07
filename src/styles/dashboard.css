@@ -1,0 +1,44 @@
+.dashboard-page {
+    width: 100%;
+}
+
+/* spacing between sections */
+
+.dashboard-section {
+    margin-top: 24px;
+}
+
+.dashboard-card {
+    height: 100%;
+}
+
+/* statistic colors */
+
+.stat-active .ant-statistic-content {
+    color: #3f8600;
+}
+
+.stat-blocked .ant-statistic-content {
+    color: #cf1322;
+}
+
+.chart-card {
+    height: 100%;
+}
+
+/* pie chart label */
+
+.pie-label {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.kpi-skeleton .ant-skeleton-title {
+    width: 60%;
+}
+
+@media (max-width: 768px) {
+    .pie-label {
+        font-size: 16px;
+    }
+}
