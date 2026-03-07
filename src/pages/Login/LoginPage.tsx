@@ -29,7 +29,7 @@ const LoginPage = () => {
 			}}
 		>
 			<div style={{ textAlign: "center" }}>
-				{/* LOGO / TITLE */}
+				{/* Logo and title */}
 				<div
 					style={{
 						marginBottom: 24,
@@ -37,14 +37,12 @@ const LoginPage = () => {
 						justifyContent: "center",
 					}}
 				>
-					{/* Ako imaš logo */}
 					<img
 						src="/favicon.png"
 						alt="logo"
 						style={{ height: 40, marginRight: 10 }}
 					/>
 
-					{/* ili samo naziv aplikacije */}
 					<Title level={3} style={{ margin: 0 }}>
 						Admin Dashboard
 					</Title>

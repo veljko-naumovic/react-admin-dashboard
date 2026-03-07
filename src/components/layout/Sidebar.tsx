@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {
 	collapsed: boolean;
-	onNavigate?: () => void; // ⬅️ samo za mobile drawer
+	onNavigate?: () => void; // only for a mobile drawer
 }
 
 const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
@@ -17,7 +17,7 @@ const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
 
 	return (
 		<div style={{ height: "100%" }}>
-			{/* ⬇️ CLOSE BUTTON (Samo mobile drawer) */}
+			{/*  Close button (only for a mobile drawer) */}
 			{onNavigate && (
 				<div
 					style={{
@@ -41,7 +41,7 @@ const Sidebar = ({ collapsed, onNavigate }: SidebarProps) => {
 				selectedKeys={[location.pathname]}
 				onClick={({ key }) => {
 					navigate(key);
-					onNavigate?.(); // ⬅️ zatvara drawer na klik
+					onNavigate?.(); // Close drawer on click
 				}}
 				style={{ height: "100%", borderRight: 0 }}
 				items={[

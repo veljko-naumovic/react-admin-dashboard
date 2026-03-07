@@ -52,7 +52,7 @@ const AdminLayout = () => {
 				</Sider>
 			)}
 
-			{/* MOBILE DRAWER */}
+			{/* Mobile Drawer */}
 			{isMobile && (
 				<Drawer
 					open={drawerOpen}
@@ -73,7 +73,7 @@ const AdminLayout = () => {
 			)}
 
 			<Layout>
-				{/* HEADER */}
+				{/* Header */}
 				<Header
 					style={{
 						background: "#fff",
@@ -83,7 +83,7 @@ const AdminLayout = () => {
 						gap: 12,
 					}}
 				>
-					{/* LEFT */}
+					{/* Left */}
 					<div
 						style={{
 							display: "flex",
@@ -126,10 +126,10 @@ const AdminLayout = () => {
 						)}
 					</div>
 
-					{/* FLEX SPACER */}
+					{/* Flex space */}
 					<div style={{ flex: 1 }} />
 
-					{/* RIGHT */}
+					{/* Right */}
 					<div>
 						{isXs ? (
 							<Dropdown
@@ -148,7 +148,7 @@ const AdminLayout = () => {
 						)}
 					</div>
 				</Header>
-				{/* CONTENT */}
+				{/* Content */}
 				<Content
 					style={{
 						padding: 16,

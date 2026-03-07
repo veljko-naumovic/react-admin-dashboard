@@ -4,10 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { mockUsers } from "../Users/mockUsers";
 
-/* =======================
-   SKELETON COMPONENTS
-======================= */
-
 const KpiSkeleton = () => (
 	<Card>
 		<Skeleton active title={{ width: "60%" }} paragraph={false} />
@@ -20,10 +16,6 @@ const ChartSkeleton = () => (
 	</Card>
 );
 
-/* =======================
-   DASHBOARD PAGE
-======================= */
-
 const DashboardPage = () => {
 	const [loading, setLoading] = useState(true);
 
@@ -33,17 +25,11 @@ const DashboardPage = () => {
 		return () => clearTimeout(timer);
 	}, []);
 
-	/* =======================
-	   KPI CALCULATIONS
-	======================= */
-
 	const totalUsers = mockUsers.length;
 	const activeUsers = mockUsers.filter((u) => u.status === "active").length;
 	const blockedUsers = mockUsers.filter((u) => u.status === "blocked").length;
 
-	/* =======================
-	   CHART DATA
-	======================= */
+	// Chart data
 
 	const usersByRole = useMemo(
 		() => [
@@ -91,7 +77,7 @@ const DashboardPage = () => {
 
 	return (
 		<>
-			{/* KPI CARDS */}
+			{/* Cards */}
 			<Row gutter={[16, 16]}>
 				<Col xs={24} xl={8}>
 					{loading ? (
@@ -136,7 +122,7 @@ const DashboardPage = () => {
 				</Col>
 			</Row>
 
-			{/* DONUT + COLUMN */}
+			{/* Donut + Column */}
 			<Row gutter={[16, 16]} style={{ marginTop: 24 }}>
 				<Col xs={24} xl={12}>
 					{loading ? (
@@ -211,7 +197,7 @@ const DashboardPage = () => {
 				</Col>
 			</Row>
 
-			{/* LINE CHART */}
+			{/* Line Chart */}
 			<Row gutter={[16, 16]} style={{ marginTop: 24 }}>
 				<Col xs={24}>
 					{loading ? (

@@ -7,13 +7,13 @@ const AUTH_STORAGE_KEY = "auth_user";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
-	// ✅ lazy initialization (čitamo localStorage PRE prvog rendera)
+	// check localStorage before first render
 	const [user, setUser] = useState<User | null>(() => {
 		const storedUser = localStorage.getItem(AUTH_STORAGE_KEY);
 		return storedUser ? JSON.parse(storedUser) : null;
 	});
 
-	// auth je odmah spreman
+	// auth is ready
 	const isAuthReady = true;
 
 	const login = async (email: string, role: UserRole) => {

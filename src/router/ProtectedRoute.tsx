@@ -5,7 +5,7 @@ import { useAuth } from "../auth/useAuth";
 const ProtectedRoute = () => {
 	const auth = useAuth();
 
-	// ⬇️ čekamo da se auth state učita
+	// auth state - is ready
 	if (!auth?.isAuthReady) {
 		return (
 			<div
